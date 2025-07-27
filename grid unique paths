@@ -1,0 +1,84 @@
+class Solution {
+    /*
+    int count3(int m, int n, vector<vector<int>> &dp){
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if (i==0 && j==0){
+                    dp[i][j]=1;
+                    continue;
+                }
+                int up=0;
+                int left=0;
+                if (i>0) up=dp[i-1][j];
+                if (j>0) left=dp[i][j-1];
+                dp[i][j]=up+left;
+            }
+        }
+        return dp[m-1][n-1];
+    }
+    */
+
+    /*
+    int count2(int i, int j, vector<vector<int>> &dp){
+        if (i==0 && j==0) return 1;
+        if (i<0 || j<0) return 0;
+        if (dp[i][j]!=-1) return dp[i][j];
+        int up=count2(i-1, j, dp);
+        int left=count2(i, j-1, dp);
+        return dp[i][j]=up+left;
+    }
+    */
+
+    /*
+    int count1(int i, int j){
+        if (i==0 && j==0) return 1;
+        if (i<0 || j<0) return 0;
+        int up=count1(i-1, j);
+        int left=count1(i, j-1);
+        return up+left;
+    }
+    */
+public:
+    int uniquePaths(int m, int n) {
+        /*
+        // 1. recursion
+        // TC : O(2^(m+n))
+        // SC : O(m+n)
+        return count1(m-1, n-1); 
+        */
+        /*
+        // 2. memoization
+        // TC : O(m*n)
+        // SC : O(m+n)+O(m*n)
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return count2(m-1, n-1, dp); 
+        */
+        /*
+        // 3. tabulation
+        // TC : O(m*n)
+        // SC : O(m*n)
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return count3(m, n, dp); 
+        */
+
+        // 4. space optimized
+        // TC : O(m*n)
+        // SC : O(n)
+        vector<int> prev(n, 0);
+        for(int i=0;i<m;i++){
+            vector<int> temp(n, 0);
+            for(int j=0;j<n;j++){
+                if (i==0 && j==0){
+                    temp[j]=1;
+                    continue;
+                }
+                int up=0, left=0;
+                if (i>0) up=prev[j];
+                if (j>0) left=temp[j-1];
+                temp[j]=up+left;
+            }
+            prev=temp;
+        }
+        return prev[n-1];
+    }
+};
