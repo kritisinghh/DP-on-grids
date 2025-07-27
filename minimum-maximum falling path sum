@@ -1,0 +1,107 @@
+class Solution {
+    /*
+    int func2(int i, int j, int n, vector<vector<int>> &matrix, vector<vector<int>> &dp){
+        if (j<0 || j>=n) return INT_MAX;
+        if (i==0) return matrix[i][j];
+        if (dp[i][j]!=-1) return dp[i][j];
+        int left=func2(i-1, j-1, n, matrix, dp);
+        int top=func2(i-1, j, n, matrix, dp);
+        int right=func2(i-1, j+1, n, matrix, dp);
+        int mini=min({left, top, right});
+        return dp[i][j]=matrix[i][j]+mini;
+    }
+    */
+    /*
+    int func1(int i, int j, int n, vector<vector<int>> &matrix){
+        if (j<0 || j>=n) return INT_MAX;
+        if (i==0) return matrix[i][j];
+        int left=func1(i-1, j-1, n, matrix);
+        int top=func1(i-1, j, n, matrix);
+        int right=func1(i-1, j+1, n, matrix);
+        int mini=min({left, top, right});
+        return matrix[i][j]+mini;
+    }
+    */
+public:
+    int minFallingPathSum(vector<vector<int>>& matrix) {
+        /*
+        // 1. recursion
+        // TC : O(3^n)+O(n)
+        // SC : O(n)
+        int n=matrix.size();
+        int ans=INT_MAX;
+        for(int j=0;j<n;j++){
+            int temp=func1(n-1, j, n, matrix);
+            if (ans>temp) ans=temp;
+        }
+        return ans;
+        */
+        /*
+        // 2. memoization
+        // TC : O(n*n)+O(n)
+        // SC : O(n*n)+O(n),-recursion stack space
+        int n=matrix.size();
+        int ans=INT_MAX;
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        for(int j=0;j<n;j++){
+            int temp=func2(n-1, j, n, matrix, dp);
+            if (ans>temp) ans=temp;
+        }
+        return ans;
+        */
+        /*
+        // 3. tabulation
+        // TC : O(n*n)+O(n)
+        // SC : O(n*n)
+        int n=matrix.size();
+        int ans=INT_MAX;
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        for(int j=0;j<n;j++){
+            dp[n-1][j]=matrix[n-1][j];
+        }
+        for(int i=n-2;i>=0;i--){
+            for(int j=0;j<n;j++){
+                int left, at, right;
+                if (j>0) left=dp[i+1][j-1];
+                else left=INT_MAX;
+                at=dp[i+1][j];
+                if (j<n-1) right=dp[i+1][j+1];
+                else right=INT_MAX;
+                int mini=min({left, at, right});
+                dp[i][j]=matrix[i][j]+mini;
+            }
+        }
+        for(int j=0;j<n;j++){
+            if (ans>dp[0][j]) ans=dp[0][j];
+        }
+        return ans;
+        */
+        // 4. space optimized
+        // TC : O(n*n)+O(n)
+        // SC : O(n)
+        int n=matrix.size();
+        int ans=INT_MAX;
+        vector<int> prev(n, 0);
+        for(int j=0;j<n;j++){
+            prev[j]=matrix[n-1][j];
+        }
+        for(int i=n-2;i>=0;i--){
+            vector<int> temp(n, 0);
+            for(int j=0;j<n;j++){
+                int left, at, right;
+                if (j>0) left=prev[j-1];
+                else left=INT_MAX;
+                at=prev[j];
+                if (j<n-1) right=prev[j+1];
+                else right=INT_MAX;
+                int mini=min({left, at, right});
+                temp[j]=matrix[i][j]+mini;
+            }
+            prev=temp;
+        }
+        for(int j=0;j<n;j++){
+            if (ans>prev[j]) ans=prev[j];
+        }
+        return ans;
+    }
+};
