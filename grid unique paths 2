@@ -1,0 +1,100 @@
+class Solution {
+    /*
+    int count1(int i, int j, vector<vector<int>>& obstacleGrid){
+        if (i>=0 && j>=0 && obstacleGrid[i][j]==1) return 0;
+        if (i==0 && j==0) return 1;
+        if (i<0 || j<0) return 0;
+        int up=count1(i-1, j, obstacleGrid);
+        int left=count1(i, j-1, obstacleGrid);
+        return up+left;
+    }
+    */
+    /*
+    int count2(int i, int j, vector<vector<int>> &dp, vector<vector<int>>& obstacleGrid){
+        if (i>=0 && j>=0 && obstacleGrid[i][j]==1) return 0;
+        if (i==0 && j==0) return 1;
+        if (i<0 || j<0) return 0;
+        if (dp[i][j]!=-1) return dp[i][j];
+        int up=count2(i-1, j, dp, obstacleGrid);
+        int left=count2(i, j-1, dp, obstacleGrid);
+        return dp[i][j]=up+left;
+    }
+    */
+    /*
+    int count3(int m, int n, vector<vector<int>> &dp, vector<vector<int>>& obstacleGrid){
+        for(int i=0;i<m;i++){
+            for(int j=0;j<n;j++){
+                if (i>=0 && j>=0 && obstacleGrid[i][j]==1){
+                    dp[i][j]=0;
+                    continue;
+                }
+                if (i==0 && j==0){
+                    dp[i][j]=1;
+                    continue;
+                }
+                int up=0;
+                int left=0;
+                if (i>0) up=dp[i-1][j];
+                if (j>0) left=dp[i][j-1];
+                dp[i][j]=up+left;
+            }
+        }
+        return dp[m-1][n-1];
+    }
+    */
+
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        /*
+        // 1. recursion
+        // TC : O(2^(m+n))
+        // SC : O(m+n)
+        int m=obstacleGrid.size();
+        int n=obstacleGrid[0].size();
+        return count1(m-1, n-1, obstacleGrid); 
+        */
+        /*
+        // 2. memoization
+        // TC : O(m*n)
+        // SC : O(m+n)+O(m*n)
+        int m=obstacleGrid.size();
+        int n=obstacleGrid[0].size();
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return count2(m-1, n-1, dp, obstacleGrid); 
+        */
+        /*
+        // 3. tabulation
+        // TC : O(m*n)
+        // SC : O(m*n)
+        int m=obstacleGrid.size();
+        int n=obstacleGrid[0].size();
+        vector<vector<int>> dp(m, vector<int>(n, -1));
+        return count3(m, n, dp, obstacleGrid); 
+        */
+        // 4. space optimized
+        // TC : O(m*n)
+        // SC : O(n)
+        int m=obstacleGrid.size();
+        int n=obstacleGrid[0].size();
+        vector<int> prev(n, 0);
+        for(int i=0;i<m;i++){
+            vector<int> temp(n, 0);
+            for(int j=0;j<n;j++){
+                if (i>=0 && j>=0 && obstacleGrid[i][j]==1){
+                    temp[j]=0;
+                    continue;
+                }
+                if (i==0 && j==0){
+                    temp[j]=1;
+                    continue;
+                }
+                int up=0, left=0;
+                if (i>0) up=prev[j];
+                if (j>0) left=temp[j-1];
+                temp[j]=up+left;
+            }
+            prev=temp;
+        }
+        return prev[n-1];
+    }
+};
