@@ -1,0 +1,73 @@
+class Solution {
+    /*
+    int func2(int i, int j, int n, vector<vector<int>> &triangle, vector<vector<int>> &dp){
+        if (i==n-1) return triangle[i][j];
+        if (dp[i][j]!=-1) return dp[i][j];
+        int down=triangle[i][j]+func2(i+1, j, n, triangle, dp);
+        int side=triangle[i][j]+func2(i+1, j+1, n, triangle, dp);
+        return dp[i][j]=min(down, side);
+    }
+    */
+    /*
+    int func1(int i, int j, int n, vector<vector<int>> &triangle){
+        if (i==n-1) return triangle[i][j];
+        int down=triangle[i][j]+func1(i+1, j, n, triangle);
+        int side=triangle[i][j]+func1(i+1, j+1, n, triangle);
+        return min(down, side);
+    }
+    */
+public:
+    int minimumTotal(vector<vector<int>>& triangle) {
+        /*
+        // 1. recursion
+        // TC : O(2^(n*(n+1)/2))
+        // SC : O(n)
+        int n=triangle.size();
+        return func1(0, 0, n, triangle);
+        */
+        /*
+        // 2. memoization
+        // TC : O(n*n)
+        // SC : O(n)<- recursion stack space+O(n*n)
+        int n=triangle.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        return func2(0, 0, n, triangle, dp);
+        */
+        /*
+        // 3. tabulation
+        // TC : O(n*n)
+        // SC : O(n*n)<- dp array
+        int n=triangle.size();
+        vector<vector<int>> dp(n, vector<int>(n, -1));
+        for(int j=0;j<n;j++){
+            dp[n-1][j]=triangle[n-1][j];
+        }
+        for(int i=n-2;i>=0;i--){
+            for(int j=i;j>=0;j--){
+                int down=triangle[i][j]+dp[i+1][j];
+                int side=triangle[i][j]+dp[i+1][j+1];
+                dp[i][j]=min(down, side);
+            }
+        }
+        return dp[0][0];
+        */
+        // 4. space optimiztion
+        // TC : O(n*n)
+        // SC : O(n)
+        int n=triangle.size();
+        vector<int> front(n, 0);
+        for(int j=0;j<n;j++){
+            front[j]=triangle[n-1][j];
+        }
+        for(int i=n-2;i>=0;i--){
+            vector<int> curr(n, 0);
+            for(int j=i;j>=0;j--){
+                int down=triangle[i][j]+front[j];
+                int side=triangle[i][j]+front[j+1];
+                curr[j]=min(down, side);
+            }
+            front=curr;
+        }
+        return front[0];
+    }
+};
